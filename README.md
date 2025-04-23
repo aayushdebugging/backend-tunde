@@ -25,4 +25,4 @@ This project handles user authentication using Google OAuth and onboarding via a
 - **Express-session** for session management
 
 ## Directory Structure
-
+/project-root ├── /db │ └── supabase.js ├── /routes │ ├── auth.js │ └── onboarding.js ├── /views │ └── dashboard.js ├── .env ├── app.js └── package.json
