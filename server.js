@@ -1,39 +1,44 @@
-require('dotenv').config();  // Load environment variables
+require('dotenv').config(); // Load environment variables
+
 const express = require('express');
 const session = require('express-session');
 const passport = require('passport');
-require('./auth/googleAuth');  // Import Google OAuth setup
+require('./auth/googleAuth'); // Google OAuth configuration
 
 // Import routes
 const authRoutes = require('./routes/auth');
 const onboardingRoutes = require('./routes/onboarding');
+const jdRoutes = require('./routes/jdgenerator'); // NEW: JD generation route
 
 const app = express();
 
-// Middleware
+// Middleware to parse incoming requests
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// Setup sessions
+// Session configuration
 app.use(session({
   secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false
 }));
 
-// Passport middleware
+// Initialize Passport for authentication
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Use routes
+// Register route modules
 app.use('/auth', authRoutes);
 app.use('/onboarding', onboardingRoutes);
+app.use('/jd', jdRoutes); // NEW: Add JD generation route
 
-// Dashboard route to test if user is logged in
+// Protected dashboard route
 app.get('/dashboard', (req, res) => {
   if (!req.user) return res.redirect('/auth/google');
   res.send(`<h1>Welcome ${req.user.name} to your dashboard!</h1>`);
 });
 
-// Start the server
-app.listen(3000, () => console.log('Server running at http://localhost:3000'));
+// Start server
+app.listen(3000, () => {
+  console.log('🚀 Server running at http://localhost:3000');
+});
