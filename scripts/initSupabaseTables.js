@@ -2,7 +2,7 @@ require('dotenv').config();
 const fetch = require('node-fetch');
 
 const createTablesSQL = `
-  -- Enable UUID generation (only needed if using UUIDs)
+  -- Enable UUID generation
   CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
   -- Create users table
@@ -12,40 +12,34 @@ const createTablesSQL = `
     name TEXT NOT NULL
   );
 
-  -- Create company_onboarding table
+  -- Create company_onboarding table (for now only requires email)
   CREATE TABLE IF NOT EXISTS company_onboarding (
     id SERIAL PRIMARY KEY,
     user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
-    name TEXT NOT NULL,
+    name TEXT,
     email TEXT NOT NULL,
-    company_name TEXT NOT NULL,
-    company_location TEXT NOT NULL,
-    hiring_frequency TEXT NOT NULL,
-    hiring_timeline TEXT NOT NULL,
-    preferred_job_titles TEXT[] NOT NULL,
-    industry_type TEXT NOT NULL,
-    company_size INTEGER NOT NULL,
-    brand_voice TEXT NOT NULL,
-    other_preferences TEXT,
     created_at TIMESTAMP DEFAULT now()
   );
 
-  -- Create job_descriptions table
+  -- Updated job_descriptions table with new required fields
   CREATE TABLE IF NOT EXISTS job_descriptions (
     id SERIAL PRIMARY KEY,
-    email TEXT NOT NULL,
-    role TEXT NOT NULL,
-    company TEXT NOT NULL,
+    recruiter_email TEXT NOT NULL,
+    recruiter_name TEXT NOT NULL,
+    job_title TEXT NOT NULL,
+    company_name TEXT NOT NULL,
+    skills_required TEXT[] NOT NULL,
+    experience_required_years INTEGER NOT NULL,
+    position_level TEXT NOT NULL,
+    work_mode TEXT NOT NULL,
     location TEXT NOT NULL,
-    work_arrangement TEXT NOT NULL,
-    experience_required TEXT NOT NULL,
-    key_skills TEXT[] NOT NULL,
-    education TEXT NOT NULL,
-    compensation_range TEXT NOT NULL,
-    responsibilities TEXT,
-    team_structure TEXT,
-    perks_and_benefits TEXT,
-    growth_opportunities TEXT,
+    salary_range_lpa TEXT NOT NULL,
+    notice_period_days INTEGER NOT NULL,
+    qualification TEXT NOT NULL,
+    responsibilities TEXT[] NOT NULL,
+    team_structure TEXT NOT NULL,
+    perks_and_benefits TEXT NOT NULL,
+    growth_opportunities TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT now()
   );
 `;

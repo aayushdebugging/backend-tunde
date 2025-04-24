@@ -25,39 +25,24 @@ router.get('/', async (req, res) => {
   }
 });
 
-// Submit onboarding form data
+// Submit onboarding with only email
 router.post('/', async (req, res) => {
   try {
-    const {
-      company_name,
-      company_location,
-      hiring_frequency,
-      hiring_timeline,
-      preferred_job_titles,
-      industry_type,
-      company_size,
-      brand_voice,
-      other_preferences,
-    } = req.body;
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({ error: 'Email is required' });
+    }
 
     const { error } = await supabase.from('company_onboarding').insert([{
       user_id: req.user.id,
       name: req.user.name,
-      email: req.user.email,
-      company_name,
-      company_location,
-      hiring_frequency,
-      hiring_timeline,
-      preferred_job_titles, // expects array
-      industry_type,
-      company_size: parseInt(company_size),
-      brand_voice,
-      other_preferences,
+      email,
     }]);
 
     if (error) return res.status(500).json({ error });
 
-    res.status(201).json({ message: 'Onboarding complete. Redirect to dashboard.' });
+    res.status(201).json({ message: 'Onboarding (email only) complete. Redirect to dashboard.' });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
