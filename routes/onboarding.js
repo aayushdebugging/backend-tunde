@@ -1,6 +1,7 @@
-const express = require('express');
+import express from 'express';
+import supabase from '../db.js'; // Important: include .js extension for ESM
+
 const router = express.Router();
-const supabase = require('../db');
 
 // Middleware to check if the user is authenticated
 router.use((req, res, next) => {
@@ -48,4 +49,4 @@ router.post('/', async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

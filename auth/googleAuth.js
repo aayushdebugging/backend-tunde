@@ -1,6 +1,6 @@
-const passport = require('passport');
-const GoogleStrategy = require('passport-google-oauth20').Strategy;
-const supabase = require('../db');  // Import your supabase client
+import passport from 'passport';
+import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
+import supabase from '../db.js'; // Note the `.js` extension
 
 passport.serializeUser((user, done) => {
   done(null, user.id);
@@ -28,7 +28,7 @@ passport.use(new GoogleStrategy({
     .eq('email', email)
     .single();
 
-  if (error) {
+  if (error && error.code !== 'PGRST116') {
     return done(error);
   }
 
@@ -39,11 +39,9 @@ passport.use(new GoogleStrategy({
       .select()
       .single();
 
-    if (error) {
-      return done(error);
-    }
+    if (error) return done(error);
     user = data;
   }
 
-  done(null, user);  // Corrected: Ensure `done` is called after checking error
+  done(null, user);
 }));
